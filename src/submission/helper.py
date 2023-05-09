@@ -24,6 +24,8 @@ def initialize_synthesizer_model(mconf):
     ### [part g]: Make some other model here
 
     ### START CODE HERE
+    
+    attention_model = GPT(mconf)
 
     ### END CODE HERE
     return attention_model
