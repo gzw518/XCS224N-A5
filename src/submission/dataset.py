@@ -181,20 +181,28 @@ class CharCorruptionDataset(Dataset):
 
         x = self.data[idx]  # select idx data
 
-        range_start = 4  # randomly generate index from 4 to int(self.block_size*7/8)
-        range_end = int(self.block_size * 7 / 8)
-        random_index = random.randint(range_start, range_end)
-        x = x[:random_index]    # cut the string at random_index
+        range_start = 6  # randomly generate index from 4 to int(self.block_size*7/8)
+        range_end = min( len(x) , int(self.block_size * 7 / 8))     # usually the doc len is less than blocksize*7/8
+        random_index = random.randint(range_start, range_end)       # pick a random cutting position
+        x = x[:random_index]    # cut the string at random position
 
-        content_len_diff = random.randint(-len(x)//4, len(x)//4)     # generate a random diff between [-len(x)//4, len(x)//4] , which avg is 0
+        # print("self.data :",self.data)
+        # print("self.data[idx] :",self.data[idx])
+        # print("range_start, range_end, random_index: ", range_start, range_end, random_index)
+        # print("x :",x)
+
+        content_len_diff = random.randint(-1,1)  # generate a random diff between [-len(x)//4, len(x)//4] , which avg is 0
         masked_content_len = len(x)//4 + content_len_diff   # masked content length is random around len(x)//4
-        masked_start_position = random.randint(0, len(x) - masked_content_len)  # mark the mask at random position
+        masked_start_position = random.randint(1, len(x) - masked_content_len)  # mark the mask at random position
 
-        x = x[:masked_start_position] + self.MASK_CHAR + x[masked_start_position+masked_content_len:]   # replace the chart as MASK_CHAR part
+        x = x[:masked_start_position] + self.MASK_CHAR + x[masked_start_position+masked_content_len:] + self.MASK_CHAR + x[masked_start_position:masked_start_position+masked_content_len] + self.MASK_CHAR    # replace the chart as MASK_CHAR part
         x = x + self.PAD_CHAR * (self.block_size - len(x))   # PAD_CHAR for the rest
 
         y = x[1:]                                            # drop the first char
         x = x[:-1]                                           # drop the last chat for predicting y
+
+        # print("x, y:", x, y)
+        # print("len(x), len(y): ", len(x), len(y))
 
         x = torch.tensor([self.stoi[c] for c in x], dtype=torch.long)  # 转化为tensor
         y = torch.tensor([self.stoi[c] for c in y], dtype=torch.long)

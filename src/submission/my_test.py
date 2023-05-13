@@ -1,9 +1,43 @@
-import random
-data = "First Citizen speak."
-print(data)
-#print(data[:])
-content_len_diff = random.randint(0, 2)
-print(content_len_diff)
+import torch
+
+# 原始张量
+x = torch.tensor([[1, 2, 3, 0, 0], [4, 5, 0, 0, 0]])
+
+# 掩码张量
+mask = torch.tensor([[1, 1, 0, 0, 0], [1, 1, 0, 0, 0]])
+
+# 将填充位置的值替换成0
+y = x.masked_fill(mask == 0, 0)
+
+print(y)
+
+
+
+
+
+
+# import torch
+#
+# # 输入张量
+# x = torch.randn(2, 3, 4, 4)
+#
+# # 掩码张量
+# T = 3
+# mask = torch.zeros(2, 3, 4, 4, dtype=torch.bool)
+# mask[:,:,:T,:T] = 1
+# print(mask)
+# # 将需要被替换的位置的值替换成0
+# y = x.masked_fill(mask == 0, 0)
+# print(y)
+
+
+
+# import random
+# data = "First Citizen speak."
+# print(data)
+# #print(data[:])
+# content_len_diff = random.randint(0, 2)
+# print(content_len_diff)
 
 
 # MASK_CHAR = u"\u2047"  # the doublequestionmark character, for mask

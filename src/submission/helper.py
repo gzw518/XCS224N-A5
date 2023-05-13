@@ -81,7 +81,7 @@ def finetune(reading_params_path, finetune_corpus_path, pretrain_dataset, block_
 
     ### [part f]  with pretraining
     else:
-        loaded_dict = torch.load(reading_params_path)    # read model param file from a path
+        loaded_dict = torch.load(reading_params_path, map_location=torch.device('cpu'))   # read model param file from a path
         model.load_state_dict(loaded_dict)      # model load param state dict
 
         # Make the name dataset

@@ -112,10 +112,16 @@ class Test_1e(GradedTestCase):
     for (x, y), entry in zip(self.dataset, self.data.split("\n")):
         x_unpad = [c.item() for c in x if c >= 2] # remove padding and mask chars
         l = len(x_unpad)
+
         if l < 4 or l > int(50*7/8):
             invalid_len = True
+            # my print error
+            #print("Invalid len, x_unpad len:", l)
 
         len_fracs.append(l / len(entry))
+
+        #print("x_unpad length:",l)
+        #print("len_fracs:",np.std(len_fracs))
 
     self.assertEqual(invalid_len, False)
     self.assertGreater(np.std(len_fracs), 0.05)
@@ -126,6 +132,10 @@ class Test_1e(GradedTestCase):
     format_ok = True
 
     for (x, y), entry in zip(self.dataset, self.data.split("\n")):
+        # print("x:",x)
+        # print("y:",y)
+        # print("entry:",entry)
+
         x = [c.item() for c in x]
         # padding should only be at end
         seen_pad = False
@@ -137,20 +147,37 @@ class Test_1e(GradedTestCase):
             else:
                 if seen_pad:
                     format_ok = False
+                    print("format_false: #1")
                     break
         body_s = "".join([self.dataset.itos[e] for e in body])
         toks = body_s.split(self.dataset.MASK_CHAR)
+
+        # 测试用的data
+        # self.data = ("let me take you down\ncause I'm going to\n"
+        #              "strawberry fields\nnothing is real and nothing to get hung about")
+        # print("len(toks): ", len(toks))
+        # print(toks)
+        # print(body_s)
+
         if len(toks) not in [3, 4]:    # it's ok for mask char to be after masked content
             format_ok = False
+            print("format_false: #2")
             break
 
-        if len(toks) == 4 and toks[3] != "":
+        if len(toks) == 4 and toks[3] != "":   #需要最后的不为空串
             format_ok = False
+            print("format_false: #3")
             break
 
         orig = toks[0] + toks[2] + toks[1]
+
+        # print("orig:",orig)
+        # print("len(orig):",len(orig))
+        # print("entry[:len(orig)]:",entry[:len(orig)])
+
         if orig != entry[:len(orig)]:
             format_ok = False
+            print("format_false: #4")
             break
 
     self.assertEqual(format_ok, True)
@@ -277,6 +304,13 @@ class Test_1g(GradedTestCase):
         x = torch.randn(11, 7, 6)
         y_sol = att_expected(x)
         y_stu = att_student(x)
+        #print("y_sol",y_sol)
+        #print("y_stu",y_stu)
+        #print("torch.norm(y_sol - y_stu):",torch.norm(y_sol - y_stu))
+        if torch.norm(y_sol - y_stu) < 1e-8 :
+            print("less than 1e-8")
+        else :
+            print("equal or more than 1e-8")
     self.assertLess(torch.norm(y_sol - y_stu), 1e-8)
 
 def getTestCaseForTestID(test_id):
