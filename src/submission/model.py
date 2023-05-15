@@ -42,7 +42,7 @@ class Block(nn.Module):
         super().__init__()
         self.ln1 = nn.LayerNorm(config.n_embd)
         self.ln2 = nn.LayerNorm(config.n_embd)
-        if config.synthesizer:
+        if config.synthesizer:    # depend on input parameter to choose different attention method
             self.attn = SynthesizerAttention(config)
         else:
             self.attn = CausalSelfAttention(config)

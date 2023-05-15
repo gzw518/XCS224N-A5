@@ -183,6 +183,14 @@ class CharCorruptionDataset(Dataset):
 
         range_start = 6  # randomly generate index from 4 to int(self.block_size*7/8)
         range_end = min( len(x) , int(self.block_size * 7 / 8))     # usually the doc len is less than blocksize*7/8
+        print("range_start:",range_start)
+        print("range_end:", range_end)
+        print("len(x):",len(x))
+        print("block_size:",self.block_size)
+        print("idx:",idx)
+        print("self.data[idx]:",self.data[idx])
+        if range_start >= range_end:
+            print("************* error range_start >= range_end *********** ")
         random_index = random.randint(range_start, range_end)       # pick a random cutting position
         x = x[:random_index]    # cut the string at random position
 
