@@ -2,6 +2,8 @@ from .model import GPT
 from .dataset import NameDataset, CharCorruptionDataset
 from .trainer import Trainer, TrainerConfig
 
+import time    # for print the train cost time
+
 import torch
 import random
 random.seed(0)
@@ -119,9 +121,16 @@ def pretrain(pretrain_dataset, block_size, model):
     ### START CODE HERE
 
     # initialize a trainer instance and kick off training
-    tconf = TrainerConfig(max_epochs=650, batch_size=128, learning_rate=6e-3,
+#     tconf = TrainerConfig(max_epochs=650, batch_size=128, learning_rate=6e-3,
+#                           lr_decay=True, warmup_tokens=512 * 20, final_tokens=200 * len(pretrain_dataset) * block_size,
+#                           num_workers=4)
+    
+    # just change to only epochs = 65, curious whether synthesizer will pretrain faster than casual
+    tconf = TrainerConfig(max_epochs=60, batch_size=128, learning_rate=6e-3,
                           lr_decay=True, warmup_tokens=512 * 20, final_tokens=200 * len(pretrain_dataset) * block_size,
                           num_workers=4)
+    
+    
     trainer_obj = Trainer(model, pretrain_dataset, None, tconf)
 
     ### END CODE HERE
@@ -137,7 +146,14 @@ def train(model, writing_params_path, trainer_obj):
 
     ### START CODE HERE
 
+    start_time = time.time()
+
     trainer_obj.train()
+
+    end_time = time.time()
+
+    print("train() function cost time: ", end_time - start_time, "seconds")
+    
     # save the model
     torch.save(model.state_dict(), writing_params_path)
 
