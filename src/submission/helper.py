@@ -125,8 +125,8 @@ def pretrain(pretrain_dataset, block_size, model):
 #                           lr_decay=True, warmup_tokens=512 * 20, final_tokens=200 * len(pretrain_dataset) * block_size,
 #                           num_workers=4)
     
-    # just change to only epochs = 65, curious whether synthesizer will pretrain faster than casual
-    tconf = TrainerConfig(max_epochs=60, batch_size=128, learning_rate=6e-3,
+    # just change to only epochs = 130 （1/5 original）, curious whether the pretrain time cost of synthesizer will be faster than casual attention model
+    tconf = TrainerConfig(max_epochs=130, batch_size=128, learning_rate=6e-3,
                           lr_decay=True, warmup_tokens=512 * 20, final_tokens=200 * len(pretrain_dataset) * block_size,
                           num_workers=4)
     
